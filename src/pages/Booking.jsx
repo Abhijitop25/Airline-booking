@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const Booking = () => {
+  
   const [passengerInfo, setPassengerInfo] = useState({
     fullName: '',
     email: '',
@@ -9,8 +10,8 @@ const Booking = () => {
     seatSelection: '',
   });
   const location = useLocation();
-  const { origin, destination, departureDate, travelClass, passengers } = location.state;
-
+  const { flight } = location.state||{};
+ console.log(flight)
   const [paymentInfo, setPaymentInfo] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -40,14 +41,14 @@ const Booking = () => {
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-10">Flight Booking</h1>
         
         {/* Flight Selection */}
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-10">
+        {/* <div className="bg-white shadow-lg rounded-lg p-6 mb-10">
           <h2 className="text-xl font-semibold mb-4">Flight Details</h2>
           <p className="text-gray-600">From: {origin}</p>
           <p className="text-gray-600">To: {destination} </p>
           <p className="text-gray-600">Departure: {departureDate}, 10:00 AM</p>
           <p>Class: {travelClass}</p>
           <p>Number of passengers: {passengers}</p>
-        </div>
+        </div> */}
 
         {/* Passenger Information Form */}
         <div className="bg-white shadow-lg rounded-lg p-6 mb-10">

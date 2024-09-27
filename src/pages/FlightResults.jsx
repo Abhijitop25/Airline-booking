@@ -5,12 +5,13 @@ const FlightResults = () => {
   // const location = useLocation();
 
   // // Check if location.state is defined
-  // const flights = location.state || [];
+  // const {flights,noOfPassangers} = location.state || [];
 
   // Sample data for available flights with seat availability
   const flights = [
     {
       airplaneId: 2,
+      
       arrivalAirportId: 2,
       arrivalTime: "2019-04-28T09:15:15.000Z",
       boardingGate: "T3",
@@ -64,19 +65,7 @@ const FlightResults = () => {
 
   //   return matchesDuration && matchesDate;
   // });
-  const convertTo24Hour = (timeStr) => {
-    const [time, modifier] = timeStr.split(' ');
-  
-    let [hours, minutes] = time.split(':').map(Number);
-  
-    if (modifier === 'PM' && hours !== 12) {
-      hours += 12;
-    } else if (modifier === 'AM' && hours === 12) {
-      hours = 0;
-    }
-  
-    return { hours, minutes };
-  };
+ 
   
 
   const calculateDuration = (departureTime, arrivalTime) => {
@@ -99,13 +88,7 @@ const FlightResults = () => {
   
 
   const navigate = useNavigate();
-  const handleOnclick = () => {
-    navigate("/booking", {
-      state: {
-        origin: origin.label || "Unknown",
-      },
-    });
-  };
+  // const handleOnclick = 
 
   const getSeatColor = (available) =>
     available > 0 ? "bg-green-500" : "bg-red-500";
@@ -232,7 +215,13 @@ const FlightResults = () => {
               </div>
 
               <button
-                onClick={handleOnclick}
+                onClick={()=>{console.log(1);
+                  navigate("/booking", {
+                    state: {
+                      flight,
+                      
+                    },
+                  });}}
                 className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
               >
                 Book Now
