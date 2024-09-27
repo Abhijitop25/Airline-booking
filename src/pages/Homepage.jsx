@@ -37,15 +37,8 @@ const Homepage = () => {
           noOfPassengers: passengers
     });
   console.log(response.data.data);
-    navigate('/flights', {
-      state: {
-        originId: originId, // Now storing city ID
-        destinationId: destinationId, // Now storing city ID
-        departureDate,
-        travelClass,
-        passengers,
-      },
-    });
+  navigate('/flights', { state: { flights: response.data.data } });
+
   };
 
   return (
