@@ -1,26 +1,34 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const FlightResults = () => {
   const location = useLocation();
-  const { origin, destination, departureDate, travelClass, passengers } = location.state || {};
+
+  // Check if location.state is defined
+  const {
+    origin = {},
+    destination = {},
+    departureDate,
+    travelClass,
+    passengers,
+  } = location.state || {};
 
   // Sample data for available flights with seat availability
   const flights = [
     {
       id: 1,
-      airline: 'Airline A',
-      logo: 'https://via.placeholder.com/50',
-      origin: origin?.label || 'Unknown',
-      destination: destination?.label || 'Unknown',
+      airline: "Airline A",
+      logo: "https://via.placeholder.com/50",
+      origin: origin.label || "Unknown", // Use a fallback value
+      destination: destination.label || "Unknown", // Use a fallback value
       departureDate,
       travelClass,
       passengers,
-      departureTime: '10:00 AM',
-      arrivalTime: '12:00 PM',
-      price: '$150',
+      departureTime: "10:00 AM",
+      arrivalTime: "12:00 PM",
+      price: "$150",
       stops: 0,
-      duration: '2h 0m',
+      duration: "2h 0m",
       co2Emission: 99,
       seatAvailability: {
         economy: { available: 50, total: 100 },
@@ -30,18 +38,18 @@ const FlightResults = () => {
     },
     {
       id: 2,
-      airline: 'Airline B',
-      logo: 'https://via.placeholder.com/50',
-      origin: origin?.label || 'Unknown',
-      destination: destination?.label || 'Unknown',
+      airline: "Airline B",
+      logo: "https://via.placeholder.com/50",
+      origin: origin.label || "Unknown",
+      destination: destination.label || "Unknown",
       departureDate,
       travelClass,
       passengers,
-      departureTime: '2:00 PM',
-      arrivalTime: '4:00 PM',
-      price: '$200',
+      departureTime: "2:00 PM",
+      arrivalTime: "4:00 PM",
+      price: "$200",
       stops: 2,
-      duration: '2h 0m',
+      duration: "2h 0m",
       co2Emission: 144,
       seatAvailability: {
         economy: { available: 0, total: 100 },
@@ -53,16 +61,17 @@ const FlightResults = () => {
   ];
 
   // Filter states
-  const [selectedStops, setSelectedStops] = useState('All');
+  const [selectedStops, setSelectedStops] = useState("All");
   const [maxDuration, setMaxDuration] = useState(3); // Default max duration in hours
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [selectedClass, setSelectedClass] = useState('economy');
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedClass, setSelectedClass] = useState("economy");
 
   // Filter flights based on selected filters
   const filteredFlights = flights.filter((flight) => {
-    const flightDurationHours = parseInt(flight.duration.split('h')[0], 10);
-    const maxStops = selectedStops === 'All' ? Infinity : parseInt(selectedStops, 10);
+    const flightDurationHours = parseInt(flight.duration.split("h")[0], 10);
+    const maxStops =
+      selectedStops === "All" ? Infinity : parseInt(selectedStops, 10);
     const matchesStops = flight.stops <= maxStops;
     const matchesDuration = flightDurationHours <= maxDuration;
     const matchesDate =
@@ -73,24 +82,26 @@ const FlightResults = () => {
   });
 
   const navigate = useNavigate();
-  const handleOnclick = (flight) => {
-    navigate('/booking', {
+  const handleOnclick = () => {
+    navigate("/booking", {
       state: {
-        origin: origin?.label,
-        destination: destination?.label,
+        origin: origin.label || "Unknown",
+        destination: destination.label || "Unknown",
         departureDate,
         travelClass,
         passengers,
-        flightId: flight.id, // Pass flight ID if needed
       },
     });
   };
 
-  const getSeatColor = (available, total) => (available > 0 ? 'bg-green-500' : 'bg-red-500');
+  const getSeatColor = (available, total) =>
+    available > 0 ? "bg-green-500" : "bg-red-500";
 
   return (
     <div className="relative min-h-screen bg-gray-100 pt-32 p-6">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Available Flights</h2>
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+        Available Flights
+      </h2>
 
       {/* Filters */}
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between">
@@ -164,14 +175,23 @@ const FlightResults = () => {
           >
             {/* Airline Logo and Name */}
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <img src={flight.logo} alt={`${flight.airline} logo`} className="w-12 h-12" />
+              <img
+                src={flight.logo}
+                alt={`${flight.airline} logo`}
+                className="w-12 h-12"
+              />
               <div>
-                <h3 className="text-lg font-semibold text-gray-800">{flight.airline}</h3>
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {flight.airline}
+                </h3>
                 <p className="text-sm text-gray-600">
                   {flight.departureTime} - {flight.arrivalTime}
                 </p>
                 <p className="text-sm text-gray-600">
-                  {flight.duration} | {flight.stops === 0 ? 'Nonstop' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}
+                  {flight.duration} |{" "}
+                  {flight.stops === 0
+                    ? "Nonstop"
+                    : `${flight.stops} stop${flight.stops > 1 ? "s" : ""}`}
                 </p>
               </div>
             </div>
@@ -180,37 +200,49 @@ const FlightResults = () => {
             <div className="flex flex-col md:flex-row items-start md:items-center mb-4 md:mb-0">
               <div className="text-center md:text-left md:mr-6 mb-2 md:mb-0">
                 <p className="text-gray-600">From</p>
-                <p className="text-xl font-bold text-gray-800">{flight.origin}</p>
+                <p className="text-xl font-bold text-gray-800">
+                  {flight.origin}
+                </p>
               </div>
               <div className="text-center md:text-left">
                 <p className="text-gray-600">To</p>
-                <p className="text-xl font-bold text-gray-800">{flight.destination}</p>
+                <p className="text-xl font-bold text-gray-800">
+                  {flight.destination}
+                </p>
               </div>
             </div>
 
             {/* Price and Seat Availability */}
             <div className="text-right">
-              <p className="text-2xl font-bold text-green-600">{flight.price}</p>
+              <p className="text-2xl font-bold text-green-600">
+                {flight.price}
+              </p>
+              <p className="text-gray-600">Round trip</p>
 
               {/* Seat Availability */}
               <div className="mt-4">
                 <p className="text-gray-700">Seat Availability:</p>
-                <div className="mt-2 flex space-x-2">
-                  <div className={`w-10 h-10 rounded-lg ${getSeatColor(flight.seatAvailability.economy.available, flight.seatAvailability.economy.total)}`}>
-                    {flight.seatAvailability.economy.available} / {flight.seatAvailability.economy.total}
-                  </div>
-                  <div className={`w-10 h-10 rounded-lg ${getSeatColor(flight.seatAvailability.business.available, flight.seatAvailability.business.total)}`}>
-                    {flight.seatAvailability.business.available} / {flight.seatAvailability.business.total}
-                  </div>
-                  <div className={`w-10 h-10 rounded-lg ${getSeatColor(flight.seatAvailability.first.available, flight.seatAvailability.first.total)}`}>
-                    {flight.seatAvailability.first.available} / {flight.seatAvailability.first.total}
+                <div className="mt-2">
+                  <div className="flex items-center space-x-2">
+                    <div
+                      className={`h-4 w-4 rounded-full ${getSeatColor(
+                        flight.seatAvailability[selectedClass].available,
+                        flight.seatAvailability[selectedClass].total
+                      )}`}
+                    />
+                    <span className="text-sm">
+                      {selectedClass.charAt(0).toUpperCase() +
+                        selectedClass.slice(1)}
+                      : {flight.seatAvailability[selectedClass].available}{" "}
+                      available
+                    </span>
                   </div>
                 </div>
               </div>
 
               <button
-                onClick={() => handleOnclick(flight)}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                onClick={handleOnclick}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
               >
                 Book Now
               </button>
