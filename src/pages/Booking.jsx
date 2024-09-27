@@ -2,58 +2,74 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const Booking = () => {
-  
   const [passengerInfo, setPassengerInfo] = useState({
     fullName: '',
-    email: '',
+    age: '',
     passportNumber: '',
     seatSelection: '',
   });
+  const [passengers, setPassengers] = useState([]);
   const location = useLocation();
-  const { flight } = location.state||{};
- console.log(flight)
-  const [paymentInfo, setPaymentInfo] = useState({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-  });
+  const { flight } = location.state || {};
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPassengerInfo({ ...passengerInfo, [name]: value });
   };
 
-  const handlePaymentChange = (e) => {
-    const { name, value } = e.target;
-    setPaymentInfo({ ...paymentInfo, [name]: value });
+  const addPassenger = (e) => {
+    e.preventDefault();
+    setPassengers([...passengers, passengerInfo]);
+    setTotalPrice(totalPrice + flight.price);
+    setPassengerInfo({
+      fullName: '',
+      age: '',
+      passportNumber: '',
+      seatSelection: '',
+    });
   };
 
   const handleBooking = (e) => {
     e.preventDefault();
-    // Submit booking info here
-    console.log('Passenger Info:', passengerInfo);
-    console.log('Payment Info:', paymentInfo);
+    // Submit final booking info
+    console.log('Passengers:', passengers);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-10">Flight Booking</h1>
-        
-        {/* Flight Selection */}
-        {/* <div className="bg-white shadow-lg rounded-lg p-6 mb-10">
-          <h2 className="text-xl font-semibold mb-4">Flight Details</h2>
-          <p className="text-gray-600">From: {origin}</p>
-          <p className="text-gray-600">To: {destination} </p>
-          <p className="text-gray-600">Departure: {departureDate}, 10:00 AM</p>
-          <p>Class: {travelClass}</p>
-          <p>Number of passengers: {passengers}</p>
-        </div> */}
+    <div className="min-h-screen bg-gray-100 py-12">
+      <div className="container mx-auto mt-20">
+        <h1 className="text-4xl font-bold text-center text-blue-700 mb-10">Flight Booking</h1>
+
+        {/* Flight Details Section */}
+        {flight && (
+          <div className="bg-[#d1e8e2] shadow-lg rounded-lg p-6 mb-10 border border-blue-300">
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Flight Details</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <p className="text-gray-600">Flight Number:</p>
+                <p className="text-xl font-bold">{flight.flightNumber}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Departure:</p>
+                <p className="text-xl font-bold">{new Date(flight.departureTime).toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Arrival:</p>
+                <p className="text-xl font-bold">{new Date(flight.arrivalTime).toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-gray-600">Price per Passenger:</p>
+                <p className="text-xl font-bold text-green-600">₹{flight.price}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Passenger Information Form */}
-        <div className="bg-white shadow-lg rounded-lg p-6 mb-10">
+        <div className="bg-[#d1e8e2] shadow-lg rounded-lg p-6 mb-10 border border-blue-300">
           <h2 className="text-xl font-semibold mb-4">Passenger Information</h2>
-          <form onSubmit={handleBooking}>
+          <form onSubmit={addPassenger}>
             <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-2">
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
@@ -65,29 +81,29 @@ const Booking = () => {
                   name="fullName"
                   value={passengerInfo.fullName}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
+                <label htmlFor="age" className="block text-sm font-medium text-gray-700">
+                  Age
                 </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={passengerInfo.email}
+                  type="number"
+                  id="age"
+                  name="age"
+                  value={passengerInfo.age}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
                   required
                 />
               </div>
 
               <div>
                 <label htmlFor="passportNumber" className="block text-sm font-medium text-gray-700">
-                  Passport Number
+                  Passport Number (Optional)
                 </label>
                 <input
                   type="text"
@@ -95,8 +111,7 @@ const Booking = () => {
                   name="passportNumber"
                   value={passengerInfo.passportNumber}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                  required
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
                 />
               </div>
 
@@ -109,7 +124,7 @@ const Booking = () => {
                   name="seatSelection"
                   value={passengerInfo.seatSelection}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-300"
                   required
                 >
                   <option value="">Select Seat</option>
@@ -120,66 +135,43 @@ const Booking = () => {
               </div>
             </div>
 
-            {/* Payment Information */}
-            <h2 className="text-xl font-semibold mb-4">Payment Information</h2>
-            <div className="grid grid-cols-1 gap-6 mb-6 sm:grid-cols-3">
-              <div>
-                <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
-                  Card Number
-                </label>
-                <input
-                  type="text"
-                  id="cardNumber"
-                  name="cardNumber"
-                  value={paymentInfo.cardNumber}
-                  onChange={handlePaymentChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700">
-                  Expiry Date
-                </label>
-                <input
-                  type="text"
-                  id="expiryDate"
-                  name="expiryDate"
-                  value={paymentInfo.expiryDate}
-                  onChange={handlePaymentChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                  placeholder="MM/YY"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
-                  CVV
-                </label>
-                <input
-                  type="text"
-                  id="cvv"
-                  name="cvv"
-                  value={paymentInfo.cvv}
-                  onChange={handlePaymentChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Submit Button */}
             <div className="mt-6">
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition"
+                className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition"
               >
-                Complete Booking
+                Add Passenger
               </button>
             </div>
           </form>
+        </div>
+
+        {/* Added Passengers Section */}
+        <div className="bg-[#d1e8e2] shadow-lg rounded-lg p-6 mb-10 border border-blue-300">
+          <h2 className="text-xl font-semibold mb-4">Added Passengers</h2>
+          <ul className="space-y-4">
+            {passengers.map((passenger, index) => (
+              <li key={index} className="border border-blue-200 p-4 rounded-md">
+                <p><strong>Name:</strong> {passenger.fullName}</p>
+                <p><strong>Age:</strong> {passenger.age}</p>
+                <p><strong>Seat:</strong> {passenger.seatSelection}</p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-6 text-xl font-semibold">
+            Total Price: ₹{totalPrice}
+          </div>
+        </div>
+
+        {/* Complete Booking Button */}
+        <div className="mt-6">
+          <button
+            onClick={handleBooking}
+            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition"
+          >
+            Complete Booking
+          </button>
         </div>
       </div>
     </div>

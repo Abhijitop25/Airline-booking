@@ -20,7 +20,7 @@ const FlightResults = () => {
       departureTime: "2019-04-28T07:15:15.000Z",
       flightNumber: "QF103",
       id: 1,
-      price: 5000,
+      price: 3000,
       totalSeats: 500,
       updatedAt: "2024-08-18T11:50:43.000Z"
     },
