@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const FlightResults = () => {
   const location = useLocation();
-  const { origin, destination, departureDate, travelClass, passengers } = location.state;
+  const { origin, destination, departureDate, travelClass, passengers } = location.state || {};
 
   // Sample data for available flights with seat availability
   const flights = [
@@ -11,8 +11,8 @@ const FlightResults = () => {
       id: 1,
       airline: 'Airline A',
       logo: 'https://via.placeholder.com/50',
-      origin,
-      destination,
+      origin: origin?.label || 'Unknown',
+      destination: destination?.label || 'Unknown',
       departureDate,
       travelClass,
       passengers,
@@ -32,10 +32,9 @@ const FlightResults = () => {
       id: 2,
       airline: 'Airline B',
       logo: 'https://via.placeholder.com/50',
-      origin,
-      destination,
+      origin: origin?.label || 'Unknown',
+      destination: destination?.label || 'Unknown',
       departureDate,
-      
       travelClass,
       passengers,
       departureTime: '2:00 PM',
@@ -72,26 +71,27 @@ const FlightResults = () => {
 
     return matchesStops && matchesDuration && matchesDate;
   });
-  const navigate=useNavigate();
-  const handleOnclick=()=>{
-    navigate('/booking',{
+
+  const navigate = useNavigate();
+  const handleOnclick = (flight) => {
+    navigate('/booking', {
       state: {
         origin: origin?.label,
         destination: destination?.label,
         departureDate,
-        
         travelClass,
         passengers,
+        flightId: flight.id, // Pass flight ID if needed
       },
-    })
-  }
+    });
+  };
 
   const getSeatColor = (available, total) => (available > 0 ? 'bg-green-500' : 'bg-red-500');
 
   return (
     <div className="relative min-h-screen bg-gray-100 pt-32 p-6">
       <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Available Flights</h2>
-      
+
       {/* Filters */}
       <div className="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between">
         <div className="flex items-center space-x-4 mb-4 md:mb-0">
@@ -191,24 +191,27 @@ const FlightResults = () => {
             {/* Price and Seat Availability */}
             <div className="text-right">
               <p className="text-2xl font-bold text-green-600">{flight.price}</p>
-              <p className="text-gray-600">Round trip</p>
 
               {/* Seat Availability */}
               <div className="mt-4">
                 <p className="text-gray-700">Seat Availability:</p>
-                <div className="mt-2">
-                  <div className="flex items-center space-x-2">
-                    <div
-                      className={`w-6 h-6 rounded ${getSeatColor(flight.seatAvailability[selectedClass].available, flight.seatAvailability[selectedClass].total)}`}
-                    ></div>
-                    <span className="text-gray-600 capitalize">{selectedClass}</span>
-                    <span className="ml-2 text-gray-800">{flight.seatAvailability[selectedClass].available} seats available</span>
+                <div className="mt-2 flex space-x-2">
+                  <div className={`w-10 h-10 rounded-lg ${getSeatColor(flight.seatAvailability.economy.available, flight.seatAvailability.economy.total)}`}>
+                    {flight.seatAvailability.economy.available} / {flight.seatAvailability.economy.total}
+                  </div>
+                  <div className={`w-10 h-10 rounded-lg ${getSeatColor(flight.seatAvailability.business.available, flight.seatAvailability.business.total)}`}>
+                    {flight.seatAvailability.business.available} / {flight.seatAvailability.business.total}
+                  </div>
+                  <div className={`w-10 h-10 rounded-lg ${getSeatColor(flight.seatAvailability.first.available, flight.seatAvailability.first.total)}`}>
+                    {flight.seatAvailability.first.available} / {flight.seatAvailability.first.total}
                   </div>
                 </div>
               </div>
 
-              {/* Booking Button */}
-              <button onClick={handleOnclick} className="mt-4 px-3 py-1 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+              <button
+                onClick={() => handleOnclick(flight)}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+              >
                 Book Now
               </button>
             </div>
