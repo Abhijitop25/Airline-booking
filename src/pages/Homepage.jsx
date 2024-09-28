@@ -29,17 +29,29 @@ const Homepage = () => {
 
   const handleSearchFlights = async (e) => {
     e.preventDefault();
-    console.log(departureDate);
-    const response = await axios.post('http://localhost:5000/api/v1/flights',{
-          arrivalAirportId: destinationId,
-          departureAirportId: originId,
-          departureDate: departureDate,
+  
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/flights', {
+        arrivalAirportId: destinationId,
+        departureAirportId: originId,
+        departureDate: departureDate,
+        noOfPassengers: passengers
+      });
+      
+      console.log(response.data.data);
+  
+      // Ensure response.data.data is valid before navigating
+      navigate('/flights', { 
+        state: { 
+          flight: response.data.data, 
           noOfPassengers: passengers
-    });
-  console.log(response.data.data);
-  navigate('/flights', { state: { flights: response.data.data } });
-
+        } 
+      });
+    } catch (error) {
+      console.error("Error fetching flights:", error);
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-[#ebe9e1] flex items-center justify-center">

@@ -2,34 +2,28 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const FlightResults = () => {
-  const location = useLocation();
+  // const location = useLocation();
 
   // Check if location.state is defined
-  const flights = location.state?.flights || [];
+  const flights = location.state || [];
 
   // Sample data for available flights with seat availability
-  // const flights = [
-  //   {
-  //     id: 1,
-  //     airline: "Airline A",
-  //     logo: "https://via.placeholder.com/50",
-  //     origin: origin.label || "Unknown", // Use a fallback value
-  //     destination: destination.label || "Unknown", // Use a fallback value
-  //     departureDate,
-  //     travelClass,
-  //     passengers,
-  //     departureTime: "10:00 AM",
-  //     arrivalTime: "12:00 PM",
-  //     price: "$150",
-  //     stops: 0,
-  //     duration: "2h 0m",
-  //     co2Emission: 99,
-  //     seatAvailability: {
-  //       economy: { available: 50, total: 100 },
-  //       business: { available: 10, total: 20 },
-  //       first: { available: 2, total: 5 },
-  //     },
-  //   },
+  const flights = [
+    {
+      airplaneId: 2,
+      
+      arrivalAirportId: 2,
+      arrivalTime: "2019-04-28T09:15:15.000Z",
+      boardingGate: "T3",
+      createdAt: "2024-08-18T11:50:43.000Z",
+      departureAirportId: 1,
+      departureTime: "2019-04-28T07:15:15.000Z",
+      flightNumber: "QF103",
+      id: 1,
+      price: 3000,
+      totalSeats: 500,
+      updatedAt: "2024-08-18T11:50:43.000Z"
+    },
   //   {
   //     id: 2,
   //     airline: "Airline B",
@@ -52,7 +46,7 @@ const FlightResults = () => {
   //     },
   //   },
   //   // Add more flights as needed
-  // ];
+  ];
 
   // Filter states
   const [maxDuration, setMaxDuration] = useState(3); // Default max duration in hours
@@ -61,41 +55,40 @@ const FlightResults = () => {
   const [selectedClass, setSelectedClass] = useState("economy");
 
   // Filter flights based on selected filters
-  const filteredFlights = flights.filter((flight) => {
-    const flightDurationHours = parseInt(flight.duration.split("h")[0], 10);
+  // const filteredFlights = flights.filter((flight) => {
+  //   const flightDurationHours = parseInt(flight.duration.split("h")[0], 10);
 
-    const matchesDuration = flightDurationHours <= maxDuration;
-    const matchesDate =
-      (!startDate || new Date(flight.departureDate) >= new Date(startDate)) &&
-      (!endDate || new Date(flight.departureDate) <= new Date(endDate));
+  //   const matchesDuration = flightDurationHours <= maxDuration;
+  //   const matchesDate =
+  //     (!startDate || new Date(flight.departureDate) >= new Date(startDate)) &&
+  //     (!endDate || new Date(flight.departureDate) <= new Date(endDate));
 
-    return matchesDuration && matchesDate;
-  });
+  //   return matchesDuration && matchesDate;
+  // });
+ 
+  
+
   const calculateDuration = (departureTime, arrivalTime) => {
-    const [depHours, depMinutes] = departureTime.split(":").map(Number);
-    const [arrHours, arrMinutes] = arrivalTime.split(":").map(Number);
-
-    const depDate = new Date();
-    depDate.setHours(depHours, depMinutes);
-
-    const arrDate = new Date();
-    arrDate.setHours(arrHours, arrMinutes);
-
-    const durationInMinutes = (arrDate - depDate) / (1000 * 60);
-    const hours = Math.floor(durationInMinutes / 60);
-    const minutes = durationInMinutes % 60;
-
-    return `${hours}h ${minutes}m`;
+    const departureDate = new Date(departureTime);
+    const arrivalDate = new Date(arrivalTime);
+    
+    // Get the difference in milliseconds
+    const diffMs = arrivalDate - departureDate;
+    
+    // Convert the difference to hours and minutes
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60)); // convert ms to hours
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60)); // get remaining minutes
+    
+    return `${diffHours}hrs : ${diffMinutes}m`;
   };
+  const formatTime = (isoString) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  };
+  
 
   const navigate = useNavigate();
-  const handleOnclick = () => {
-    navigate("/booking", {
-      state: {
-        origin: origin.label || "Unknown",
-      },
-    });
-  };
+  // const handleOnclick = 
 
   const getSeatColor = (available) =>
     available > 0 ? "bg-green-500" : "bg-red-500";
@@ -157,7 +150,7 @@ const FlightResults = () => {
       </div>
 
       <div className="space-y-6">
-        {filteredFlights.map((flight) => (
+        {flights.map((flight) => (
           <div
             key={flight.airplaneId}
             className="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row items-start md:items-center justify-between transition-shadow duration-300 hover:shadow-lg"
@@ -174,11 +167,9 @@ const FlightResults = () => {
                   {flight.flightNumber}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  {flight.departureTime} - {flight.arrivalTime}
-                </p>
+                {formatTime(flight.departureTime)} - {formatTime(flight.arrivalTime)}                </p>
                 <p className="text-sm text-gray-600">
                   {calculateDuration(flight.departureTime, flight.arrivalTime)}
-                  
                 </p>
               </div>
             </div>
@@ -213,21 +204,26 @@ const FlightResults = () => {
                   <div className="flex items-center space-x-2">
                     <div
                       className={`h-4 w-4 rounded-full ${getSeatColor(
-                        {flight.totalSeats}
+                        500
                       )}`}
                     />
                     <span className="text-sm">
                       {selectedClass.charAt(0).toUpperCase() +
                         selectedClass.slice(1)}
-                      : {flight.totalSeats}{" "}
-                      available
+                      : {flight.totalSeats} available
                     </span>
                   </div>
                 </div>
               </div>
 
               <button
-                onClick={handleOnclick}
+                onClick={()=>{console.log(1);
+                  navigate("/booking", {
+                    state: {
+                      flight,
+                      
+                    },
+                  });}}
                 className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
               >
                 Book Now
