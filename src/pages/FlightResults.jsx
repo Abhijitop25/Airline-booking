@@ -5,7 +5,7 @@ const FlightResults = () => {
   const location = useLocation();
 
   // Check if location.state is defined
-  const flights = location.state || [];
+  const flights = location.state?.flights || [];
 
   // Sample data for available flights with seat availability
   // const flights = [
@@ -213,7 +213,7 @@ const FlightResults = () => {
                   <div className="flex items-center space-x-2">
                     <div
                       className={`h-4 w-4 rounded-full ${getSeatColor(
-                        500
+                        {flight.totalSeats}
                       )}`}
                     />
                     <span className="text-sm">
