@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const FlightResults = () => {
-  // const location = useLocation();
+  const location = useLocation();
 
   // Check if location.state is defined
-  const flights = location.state || [];
+  const { flights, noOfPassengers } = location.state;
 
   // Sample data for available flights with seat availability
-  const flights = [
+  const flight = [
     {
       airplaneId: 2,
       

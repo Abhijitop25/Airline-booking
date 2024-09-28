@@ -43,7 +43,7 @@ const Homepage = () => {
       // Ensure response.data.data is valid before navigating
       navigate('/flights', { 
         state: { 
-          flight: response.data.data, 
+          flights: response.data.data, 
           noOfPassengers: passengers
         } 
       });
