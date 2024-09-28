@@ -10,9 +10,9 @@ const Booking = () => {
   });
   const [passengers, setPassengers] = useState([]);
   const location = useLocation();
-  const { flight } = location.state || {};
+  const { flight, noOfPassengers } = location.state;
   const [totalPrice, setTotalPrice] = useState(0);
-
+  console.log(noOfPassengers);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPassengerInfo({ ...passengerInfo, [name]: value });
