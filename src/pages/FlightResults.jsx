@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
+import { useContext } from "react";
+import axios from "axios";
 
 const FlightResults = () => {
   const location = useLocation();
-
+  const { userAuth: { access_token } } = useContext(UserContext);
   // Check if location.state is defined
   const { flights, noOfPassengers } = location.state;
 
@@ -217,7 +220,14 @@ const FlightResults = () => {
               </div>
 
               <button
-                onClick={()=>{console.log(1);
+                onClick={async ()=> {
+                  if(!access_token) return window.alert("please login first");
+                  const response = await axios.post('http://localhost:5001/api/v1/isAuthenticated', {
+                    token: access_token
+                  })
+                  if(!response){
+                    return window.alert("please login first");
+                  }
                   navigate("/booking", {
                     state: {
                       flight,

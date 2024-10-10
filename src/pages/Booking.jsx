@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
+import { UserContext } from '../App';
+import { useContext } from 'react';
 const Booking = () => {
   const [passengerInfo, setPassengerInfo] = useState({
     fullName: '',
@@ -8,11 +9,12 @@ const Booking = () => {
     passportNumber: '',
     seatSelection: '',
   });
+  const { userAuth } = useContext(UserContext);
   const [passengers, setPassengers] = useState([]);
   const location = useLocation();
   const { flight, noOfPassengers } = location.state;
   const [totalPrice, setTotalPrice] = useState(0);
-  console.log(noOfPassengers);
+  console.log(noOfPassengers, flight);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPassengerInfo({ ...passengerInfo, [name]: value });
