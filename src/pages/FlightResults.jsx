@@ -225,13 +225,15 @@ const FlightResults = () => {
                   const response = await axios.post('http://localhost:5001/api/v1/isAuthenticated', {
                     token: access_token
                   })
+                  console.log(response.data.data);
                   if(!response){
                     return window.alert("please login first");
                   }
                   navigate("/booking", {
                     state: {
                       flight,
-                      noOfPassengers
+                      noOfPassengers,
+                      user: response.data.data
                     },
                   });}}
                 className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"

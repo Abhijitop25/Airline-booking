@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { UserContext } from '../App';
 import { useContext } from 'react';
+import axios from 'axios';
 const Booking = () => {
   const [passengerInfo, setPassengerInfo] = useState({
     fullName: '',
@@ -9,12 +10,13 @@ const Booking = () => {
     passportNumber: '',
     seatSelection: '',
   });
-  const { userAuth } = useContext(UserContext);
+  
+  const { userAuth: { access_token } } = useContext(UserContext);
   const [passengers, setPassengers] = useState([]);
   const location = useLocation();
-  const { flight, noOfPassengers } = location.state;
+  const { flight, noOfPassengers, user } = location.state;
   const [totalPrice, setTotalPrice] = useState(0);
-  console.log(noOfPassengers, flight);
+  console.log(noOfPassengers, flight, user);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPassengerInfo({ ...passengerInfo, [name]: value });
@@ -32,10 +34,15 @@ const Booking = () => {
     });
   };
 
-  const handleBooking = (e) => {
+  const handleBooking = async (e) => {
     e.preventDefault();
-    // Submit final booking info
-    console.log('Passengers:', passengers);
+    console.log(user.email);
+    const response = await axios.post('http://localhost:5001/api/v1/getUser',{ email: user.email });
+    console.log(response.data.data.id, flight.id, noOfPassengers);
+    const flightId = flight.id;
+    const userId = response.data.data.id;
+    const booking = await axios.post('http://localhost:5002/api/v1/bookings', { flightId, userId, noOfSeats: noOfPassengers });
+    console.log(booking);
   };
 
   return (
