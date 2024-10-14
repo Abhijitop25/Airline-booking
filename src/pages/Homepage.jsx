@@ -21,7 +21,6 @@ const Homepage = () => {
         label: city.name, // City name as label
       }));
       setCities(citiesData); // Set the mapped cities to state
-      console.log(cities);
     } catch (error) {
       console.error('Error fetching cities:', error);
     }
@@ -51,10 +50,9 @@ const Homepage = () => {
       console.error("Error fetching flights:", error);
     }
   };
-  
 
   return (
-    <div className="min-h-screen bg-[#ebe9e1] flex items-center justify-center">
+    <div className="min-h-screen bg-[#ebe9e1] flex items-center justify-center pt-20"> {/* Added padding-top to avoid navbar overlap */}
       <div className="w-full max-w-2xl bg-[#d1e8e2] rounded-lg shadow-2xl p-8">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Find Your Perfect Flight</h2>
         <form className="space-y-6" onSubmit={handleSearchFlights}>

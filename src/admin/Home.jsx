@@ -1,146 +1,141 @@
-import React from 'react';
-import { FaHome, FaCalendarAlt, FaBell, FaTrash, FaCog, FaSignOutAlt, FaEdit } from 'react-icons/fa';
-import { MdFlight } from 'react-icons/md';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from "react";
+import {
+  FaPlane,
+  FaUsers,
+  FaBook,
+  FaChartBar,
+  FaSignOutAlt,
+  FaTimes,
+  FaBars,
+} from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+import Maincontent from "./After Admin/Maincontent";
+import ManageFlight from "./After Admin/ManageFlight";
+import ManageUsers from "./After Admin/ManageUsers";
+import BookingManagement from "./After Admin/BookingManagement";
 
 const AdminDashboard = () => {
-  return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="w-1/5 bg-purple-600 p-5 fixed left-0 top-0 bottom-0">
-        <div className="text-white text-2xl font-bold mb-8 mt-8 flex items-center">
-          <MdFlight className="mr-2" />
-          Booking
-        </div>
-        <nav>
-          <ul className="space-y-6 text-white">
-            {/* Add NavLink for routing */}
-            <li>
-              <NavLink to="/dashboard" className="flex items-center" activeClassName="text-blue-300">
-                <FaHome className="mr-2" />
-                Home
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/bookings" className="flex items-center" activeClassName="text-blue-300">
-                <MdFlight className="mr-2" />
-                Bookings
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/calendar" className="flex items-center" activeClassName="text-blue-300">
-                <FaCalendarAlt className="mr-2" />
-                Calendar
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/notifications" className="flex items-center" activeClassName="text-blue-300">
-                <FaBell className="mr-2" />
-                Notifications
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/trash" className="flex items-center" activeClassName="text-blue-300">
-                <FaTrash className="mr-2" />
-                Trash
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/settings" className="flex items-center" activeClassName="text-blue-300">
-                <FaCog className="mr-2" />
-                Settings
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
-        <div className="absolute bottom-8 left-8 flex items-center text-white cursor-pointer">
-          <FaSignOutAlt className="mr-2" />
-          Logout
-        </div>
-      </div>
+  // State to manage active section
+  const [activeSection, setActiveSection] = useState("Dashboard");
 
-      {/* Main Content */}
-      <div className="w-4/5 ml-[20%] p-10"> {/* Added margin to avoid overlapping */}
-        <div className="flex justify-between items-center mb-8">
-          {/* Search Bar */}
-          <input
-            type="text"
-            placeholder="Search here"
-            className="border p-2 rounded-md w-1/3"
-          />
-          {/* User Profile */}
-          <div className="flex items-center">
-            <FaBell className="text-gray-400 mr-5" />
-            <div className="flex items-center bg-gray-200 p-2 rounded-full">
-              <img
-                src="https://via.placeholder.com/40"
-                alt="Profile"
-                className="w-8 h-8 rounded-full mr-2"
-              />
-              <span>Tanzir Rahman</span>
+  // Handler for Logout
+  const handleLogout = () => {
+    alert("Logged out successfully!");
+  };
+
+  // Toggle Sidebar for Mobile
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  return (
+    <div className="h-screen bg-gray-100 flex">
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 bottom-0 left-0 transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 w-64 bg-blue-800 text-white transition-transform duration-300 ease-in-out z-50`}
+      >
+        <div className="p-6 flex items-center justify-between">
+          <h2 className="text-2xl font-bold">Admin Dashboard</h2>
+          <button className="md:hidden" onClick={toggleSidebar}>
+            <FaTimes />
+          </button>
+        </div>
+        <div className="p-6">
+          {/* Admin Profile */}
+          <div className="flex items-center space-x-4 mb-6">
+            <img
+              src="https://via.placeholder.com/50"
+              alt="Admin"
+              className="w-12 h-12 rounded-full"
+            />
+            <div>
+              <h3 className="text-lg font-semibold">Admin Name</h3>
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-sm text-gray-300 hover:text-white"
+              >
+                <FaSignOutAlt className="mr-1" /> Logout
+              </button>
             </div>
           </div>
-        </div>
 
-        {/* Header Text */}
-        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-          <h1 className="text-3xl font-semibold mb-4">Online Booking System for all service-based industries</h1>
-          <p className="text-gray-500 mb-4">
-            Simply define your services and providers, display their availability, and you will have clients both old and new making bookings 24/7.
-          </p>
-          <button className="bg-red-500 text-white px-4 py-2 rounded-md">Book here</button>
+          {/* Navigation Menu */}
+          <nav>
+            <ul>
+              <li className="mb-2">
+                <NavLink
+                  to="/dashboard"
+                  onClick={() => {
+                    setActiveSection("Dashboard");
+                    setIsSidebarOpen(false);
+                  }}
+                  className={`flex items-center w-full px-4 py-2 rounded hover:bg-blue-700 ${
+                    activeSection === "Dashboard" ? "bg-blue-700" : ""
+                  }`}
+                >
+                  <FaChartBar className="mr-3" /> Dashboard
+                </NavLink>
+              </li>
+              <li className="mb-2">
+                <NavLink
+                
+                  onClick={() => {
+                    setActiveSection("Flight Management");
+                    setIsSidebarOpen(false);
+                  }}
+                  className={`flex items-center w-full px-4 py-2 rounded hover:bg-blue-700 ${
+                    activeSection === "Flight Management" ? "bg-blue-700" : ""
+                  }`}
+                >
+                  <FaPlane className="mr-3" /> Flight Management
+                </NavLink>
+              </li>
+              <li className="mb-2">
+                <NavLink
+                  onClick={() => {
+                    setActiveSection("Booking Management");
+                    setIsSidebarOpen(false);
+                  }}
+                  className={`flex items-center w-full px-4 py-2 rounded hover:bg-blue-700 ${
+                    activeSection === "Booking Management"
+                      ? "bg-blue-700"
+                      : ""
+                  }`}
+                >
+                  <FaBook className="mr-3" /> Booking Management
+                </NavLink>
+              </li>
+              <li className="mb-2">
+                <NavLink
+                  onClick={() => {
+                    setActiveSection("User Management");
+                    setIsSidebarOpen(false);
+                  }}
+                  className={`flex items-center w-full px-4 py-2 rounded hover:bg-blue-700 ${
+                    activeSection === "User Management" ? "bg-blue-700" : ""
+                  }`}
+                >
+                  <FaUsers className="mr-3" /> User Management
+                </NavLink>
+              </li>
+            </ul>
+          </nav>
         </div>
+      </aside>
 
-        {/* All Bookings Table */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4">All Bookings</h2>
-          <table className="w-full text-left table-auto">
-            <thead>
-              <tr>
-                <th className="px-4 py-2">Destination</th>
-                <th className="px-4 py-2">Date</th>
-                <th className="px-4 py-2">Flight Number</th>
-                <th className="px-4 py-2"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-t">
-                <td className="px-4 py-4 flex items-center">
-                  <img src="https://via.placeholder.com/40" alt="Destination" className="w-8 h-8 rounded-full mr-2" />
-                  <div>
-                    <div>6.30PM</div>
-                    <div className="text-gray-400">Dhaka</div>
-                  </div>
-                </td>
-                <td className="px-4 py-4">27-06-2022</td>
-                <td className="px-4 py-4">DH 202</td>
-                <td className="px-4 py-4">
-                  <button className="flex items-center text-pink-500">
-                    <FaEdit className="mr-2" />
-                    Edit
-                  </button>
-                </td>
-              </tr>
-              <tr className="border-t">
-                <td className="px-4 py-4 flex items-center">
-                  <img src="https://via.placeholder.com/40" alt="Destination" className="w-8 h-8 rounded-full mr-2" />
-                  <div>
-                    <div>5.30PM</div>
-                    <div className="text-gray-400">Dhaka</div>
-                  </div>
-                </td>
-                <td className="px-4 py-4">31-06-2022</td>
-                <td className="px-4 py-4">FG 603</td>
-                <td className="px-4 py-4">
-                  <button className="flex items-center text-pink-500">
-                    <FaEdit className="mr-2" />
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      {/* Main Content */}
+      <div className={`flex-1 p-6 transition-margin duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-0'} md:ml-64`}>
+        <button
+          className="text-2xl mb-4 md:hidden"
+          onClick={toggleSidebar}
+        >
+          <FaBars />
+        </button>
+        {activeSection === "Dashboard" && <Maincontent />}
+        {activeSection === "Flight Management" && <ManageFlight />}
+        {activeSection === "User Management" && <ManageUsers />}
+        {activeSection === "Booking Management" && <BookingManagement />}
       </div>
     </div>
   );

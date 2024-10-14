@@ -1,7 +1,18 @@
 // src/components/Footer.js
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Footer = () => {
+  const location=useLocation();
+
+   // Check if the current path is '/admin'
+   const isAdminPage = location.pathname === "/dashboard";
+
+   // Conditionally render the navbar if not on the admin page
+   if (isAdminPage) {
+     return null;
+   }
+
   return (
     <footer className="bg-[#272727] text-white py-6 b-0">
       <div className="container mx-auto text-center">
